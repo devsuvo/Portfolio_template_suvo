@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>404 — Signal lost · {{ site.name }}</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="{{ asset('img/logo.svg') }}" type="image/svg+xml">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+</head>
+<body class="page-404">
+  <div class="bg-grid"></div>
+  <main class="nf">
+    <img src="{{ asset('img/logo.svg') }}" alt="{{ site.logo }}" width="72" height="72">
+    <p class="mono acc">// ERROR 404 · SIGNAL LOST</p>
+    <h1 class="glitch" data-text="404">404</h1>
+    <p class="muted">This node doesn't exist in the system.</p>
+    <a href="{{ url_for('index') }}" class="btn btn-primary">Return to base →</a>
+  </main>
+</body>
+</html>

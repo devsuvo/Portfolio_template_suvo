@@ -1,0 +1,499 @@
+{%- macro icon(name, color=None, cls="ico") -%}
+<span class="{{ cls }}" style="--icon: url('{{ asset('img/icons/' ~ name ~ '.svg') }}');{% if color %} --brand: {{ color }};{% endif %}" aria-hidden="true"></span>
+{%- endmacro -%}
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ site.name }} — {{ site.role }} · {{ site.location }}</title>
+  <meta name="description" content="{{ site.description }}">
+  <meta name="author" content="{{ site.name }}">
+  <meta name="theme-color" content="#05070a">
+  <link rel="canonical" href="{{ page_url }}">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{{ site.name }} — {{ site.role }}">
+  <meta property="og:description" content="{{ site.description }}">
+  <meta property="og:url" content="{{ page_url }}">
+  {% if photo %}<meta property="og:image" content="{{ page_url.rstrip('/') }}{{ url_for('static', filename=photo) }}">{% endif %}
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="{{ asset('img/logo.svg') }}" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ asset('vendor/lenis.css') }}">
+  <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+  {% if photo %}<link rel="preload" as="image" href="{{ asset(photo) }}">{% endif %}
+  <script type="application/ld+json">
+  {{ {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": site.name,
+    "jobTitle": site.role,
+    "email": "mailto:" ~ site.email,
+    "telephone": site.phone,
+    "url": page_url,
+    "address": {"@type": "PostalAddress", "addressLocality": "Sylhet", "addressCountry": "BD"},
+    "sameAs": [site.github, site.linkedin, site.fiverr],
+    "knowsAbout": site.specialties
+  }|tojson }}
+  </script>
+</head>
+<body class="loading">
+<a class="skip-link" href="#main">Skip to content</a>
+
+<!-- ============ BOOT SEQUENCE ============ -->
+<div id="boot" aria-hidden="true">
+  <div class="boot-inner mono">
+    <div class="boot-logo"><img src="{{ asset('img/logo.svg') }}" alt="" width="72" height="72"></div>
+    <p class="boot-title">Initializing system<span class="blink">_</span></p>
+    <ul class="boot-lines">
+      <li><span>&gt; Loading experience</span><span class="ok">[ OK ]</span></li>
+      <li><span>&gt; Syncing {{ projects|length }} projects</span><span class="ok">[ OK ]</span></li>
+      <li><span>&gt; Compiling stack</span><span class="ok">[ OK ]</span></li>
+      <li><span>&gt; Activating portfolio</span><span class="ok">[ OK ]</span></li>
+    </ul>
+    <div class="boot-bar"><span></span></div>
+    <div class="boot-foot"><span id="bootPct">000%</span><span id="bootState">Booting…</span></div>
+  </div>
+</div>
+
+<div class="bg-grid" aria-hidden="true"></div>
+<div class="bg-glow g1" aria-hidden="true"></div>
+<div class="bg-glow g2" aria-hidden="true"></div>
+<div class="bg-noise" aria-hidden="true"></div>
+<div class="scroll-progress" aria-hidden="true"><span></span></div>
+<div class="cursor" aria-hidden="true"><span class="cursor-label mono"></span></div>
+<div class="cursor-dot" aria-hidden="true"></div>
+
+<!-- ============ HEADER ============ -->
+<header class="site-header">
+  <a href="#home" class="logo" aria-label="{{ site.name }} — home">
+    <img src="{{ asset('img/logo.svg') }}" alt="" width="38" height="38">
+    <span class="logo-text">{{ site.logo }}<i>.</i></span>
+  </a>
+  <div class="hud mono" aria-hidden="true">
+    <span class="hud-sec"><b id="hudNum">01</b> / <span id="hudName">Home</span></span>
+    <span class="hud-xy">X <b id="hudX">000</b> · Y <b id="hudY">000</b></span>
+    <span class="hud-time">SYL <b id="hudTime">--:--</b></span>
+  </div>
+  <div class="header-actions">
+    <a href="#contact" class="btn btn-small btn-ghost connect magnetic">Let's connect</a>
+    <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="menu">
+      <span class="mono">Menu</span><span class="bars"><i></i><i></i></span>
+    </button>
+  </div>
+</header>
+
+<!-- ============ MENU OVERLAY ============ -->
+<nav class="menu" id="menu" aria-hidden="true" aria-label="Main">
+  <div class="menu-inner">
+    <ul class="menu-links">
+      {% for num, label, target in nav %}
+      <li><a href="#{{ target }}" data-close><span class="mono">{{ num }}</span><b>{{ label }}</b></a></li>
+      {% endfor %}
+    </ul>
+    <div class="menu-side mono">
+      <p class="dim">// Get in touch</p>
+      {% for s in socials %}
+      <a href="{{ s.url }}" target="_blank" rel="noopener">{{ icon(s.icon, s.color) }}{{ s.label }} <span>↗</span></a>
+      {% endfor %}
+      <p class="dim mt">// Status</p>
+      <p><span class="pulse"></span> Available for projects</p>
+      <p class="dim">{{ site.location }} · {{ site.timezone }}</p>
+    </div>
+  </div>
+</nav>
+
+<!-- ============ SECTION INDEX ============ -->
+<aside class="sec-index mono" aria-label="Section index">
+  {% for num, label, target in nav %}
+  <a href="#{{ target }}" data-target="{{ target }}"><span class="n">{{ num }}</span><span class="l">{{ label }}</span></a>
+  {% endfor %}
+</aside>
+
+<main id="main">
+
+<!-- ============ 01 HERO ============ -->
+<section id="home" class="section hero" data-num="01" data-name="Home">
+  <div class="hero-left">
+    <div class="status-row mono intro" style="--d: 0">
+      <span class="pulse"></span> <span class="hide-sm">Build status:</span> <b class="acc">Active</b>
+      <span class="sep">//</span> Available for projects
+    </div>
+    <p class="hello mono intro" style="--d: 1">Hi, I'm</p>
+    <h1 class="hero-name">
+      <span class="glitch" data-text="{{ site.name }}">{% for ch in site.name %}<span class="ch" style="--i: {{ loop.index0 }}">{% if ch == ' ' %}&nbsp;{% else %}{{ ch }}{% endif %}</span>{% endfor %}</span>
+    </h1>
+    <p class="hero-role intro" style="--d: 4"><span class="typed" data-roles='{{ site.roles|tojson }}'>{{ site.roles[0] }}</span><span class="caret">_</span></p>
+    <p class="hero-tag intro" style="--d: 5">{{ site.tagline }}</p>
+    <p class="hero-desc intro" style="--d: 6">{{ site.intro }}</p>
+    <div class="btn-row intro" style="--d: 7">
+      <a href="#contact" class="btn btn-primary magnetic">Hire me <span class="arr">→</span></a>
+      <a href="#work" class="btn btn-ghost magnetic">View my work</a>
+    </div>
+    <div class="hero-stats intro" style="--d: 8">
+      {% for s in stats[:3] %}
+      <div class="stat">
+        <b><span data-count="{{ s.value }}">0</span><em>{{ s.suffix }}</em></b>
+        <small class="mono">{{ s.label }}</small>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="hero-right intro" style="--d: 3">
+    <div class="holo" id="holo" tabindex="0" role="button" aria-pressed="false" aria-label="Portrait of {{ site.name }}. Move to reveal circuit view, click to lock.">
+      <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+      <div class="holo-bgtext" aria-hidden="true">{{ site.logo }}</div>
+      <div class="holo-base">
+        {% if photo %}
+        <img class="holo-photo" src="{{ asset(photo) }}" alt="{{ site.name }}" width="347" height="431">
+        {% else %}
+        <div class="holo-mono">{{ site.logo }}</div>
+        {% endif %}
+      </div>
+      <div class="holo-circuit" aria-hidden="true">
+        {% if photo %}<img class="holo-photo xray" src="{{ asset(photo) }}" alt="">{% endif %}
+        <svg viewBox="0 0 400 400" preserveAspectRatio="xMidYMid slice">
+          <defs>
+            <pattern id="circ" width="40" height="40" patternUnits="userSpaceOnUse">
+              <path d="M0 20h12l6-6h22M20 0v8l6 6M20 40v-10l-6-6H0" fill="none" stroke="currentColor" stroke-width="1"/>
+              <circle cx="18" cy="14" r="2" fill="currentColor"/>
+              <circle cx="14" cy="24" r="1.6" fill="currentColor"/>
+            </pattern>
+          </defs>
+          <rect width="400" height="400" fill="url(#circ)"/>
+        </svg>
+      </div>
+      <div class="holo-scan" aria-hidden="true"></div>
+      <div class="holo-hud mono">
+        <span>ID: {{ site.logo }}-0001 · {{ site.first_name|upper }}</span>
+        <span id="holoState">Move to reveal · Click to lock</span>
+      </div>
+    </div>
+
+    <div class="spec mono">
+      <div class="spec-head"><span>// System profile</span><span class="acc">● online</span></div>
+      <dl>
+        <div><dt>Location</dt><dd>{{ site.location }} · {{ site.timezone }}</dd></div>
+        <div><dt>Email</dt><dd><a href="mailto:{{ site.email }}">{{ site.email }}</a></dd></div>
+        <div><dt>Experience</dt><dd>{{ stats[0].value }}+ years · since {{ site.since }}</dd></div>
+        <div><dt>Availability</dt><dd>{{ site.availability }}</dd></div>
+        <div><dt>Languages</dt><dd>{{ site.languages }}</dd></div>
+      </dl>
+      <div class="chips">
+        {% for t in site.specialties %}<span>{{ t }}</span>{% endfor %}
+      </div>
+      {% if has_cv %}
+      <a href="{{ url_for('download_cv') }}" class="btn btn-small btn-primary full">Download CV ↓</a>
+      {% else %}
+      <a href="{{ site.fiverr }}" target="_blank" rel="noopener" class="btn btn-small btn-primary full">{{ icon('fiverr') }} Hire me on Fiverr ↗</a>
+      {% endif %}
+    </div>
+  </div>
+
+  <a href="#profile" class="scroll-hint mono"><span></span>Scroll</a>
+</section>
+
+<!-- ============ 02 PROFILE ============ -->
+<section id="profile" class="section" data-num="02" data-name="Profile">
+  <div class="sec-head">
+    <span class="sec-label mono reveal">02 <i></i> Profile</span>
+    <h2 class="sec-title split">Built for the space between <em>idea</em> and <em>impact</em>.</h2>
+  </div>
+  <div class="profile-grid">
+    <div class="profile-text">
+      {% for p in site.about %}<p class="reveal">{{ p }}</p>{% endfor %}
+      <div class="btn-row reveal">
+        <a href="#contact" class="btn btn-primary magnetic">Start a project <span class="arr">→</span></a>
+        <a href="{{ site.linkedin }}" target="_blank" rel="noopener" class="btn btn-ghost">{{ icon('linkedin') }} LinkedIn</a>
+      </div>
+    </div>
+    <aside class="now-card reveal">
+      <div class="now-head mono"><span class="pulse"></span> Currently</div>
+      <ul>
+        {% for n in site.now %}<li>{{ n }}</li>{% endfor %}
+      </ul>
+      <div class="now-foot mono">
+        <span>{{ site.location }}</span><span>{{ site.response }}</span>
+      </div>
+    </aside>
+  </div>
+
+  <div class="services" data-stagger>
+    {% for s in services %}
+    <article class="service reveal">
+      <div class="service-top"><span class="mono acc">{{ '%02d' % loop.index }}</span>{{ icon(s.icon, cls='ico svc-ico') }}</div>
+      <h3>{{ s.title }}</h3>
+      <p>{{ s.text }}</p>
+    </article>
+    {% endfor %}
+  </div>
+
+  <div class="profile-stats" data-stagger>
+    {% for s in stats %}
+    <div class="pstat reveal">
+      <b><span data-count="{{ s.value }}">0</span><em>{{ s.suffix }}</em></b>
+      <small class="mono">{{ s.label }}</small>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- ============ 03 STACK ============ -->
+<section id="stack" class="stack" data-num="03" data-name="Stack">
+  <div class="stack-sticky">
+    <div class="section stack-inner">
+      <div class="stack-copy">
+        <span class="sec-label mono reveal">03 <i></i> Stack</span>
+        <h2 class="sec-title split">Tools, aligned around the <em>mission</em>.</h2>
+        <p class="muted reveal">Every module plays a role in the system. Scroll to rotate the orbit — hover or tap a module to inspect it.</p>
+        <div class="mod-panel mono reveal" id="modPanel" aria-live="polite">
+          <div class="mp-top"><span id="modIdx">01 / {{ '%02d' % skills|length }}</span><span class="acc" id="modGroup">● {{ skills[0].group }}</span></div>
+          <h3 id="modName">{{ skills[0].name }}</h3>
+          <p id="modRole">{{ skills[0].role }}</p>
+          <div class="mp-dots" aria-hidden="true">{% for s in skills %}<i></i>{% endfor %}</div>
+        </div>
+      </div>
+      <div class="orbit-wrap reveal">
+        <div class="orbit" id="orbit" style="--n: {{ skills|length }}">
+          <div class="ring r1"></div><div class="ring r2"></div><div class="ring r3"></div>
+          <div class="orbit-core"><img src="{{ asset('img/logo.svg') }}" alt="" width="56" height="56"><small class="mono">core</small></div>
+          <div class="orbit-spin" id="orbitSpin">
+            {% for s in skills %}
+            <button class="mod" style="--i: {{ loop.index0 }}; --brand: {{ s.color }}" data-i="{{ loop.index0 }}"
+                    data-name="{{ s.name }}" data-role="{{ s.role }}" data-group="{{ s.group }}" aria-label="{{ s.name }}">
+              <span class="mod-in">{{ icon(s.icon, s.color) }}<span class="mono">{{ s.name }}</span></span>
+            </button>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 04 WORK ============ -->
+<section id="work" class="section" data-num="04" data-name="Work">
+  <div class="sec-head split-head">
+    <div>
+      <span class="sec-label mono reveal">04 <i></i> Work</span>
+      <h2 class="sec-title split">Selected systems. <em>Real</em> product territory.</h2>
+    </div>
+    <p class="muted reveal">A cross-section of client work and products — open any card for the full project dossier.</p>
+  </div>
+
+  <div class="filters mono reveal" role="tablist" aria-label="Filter projects">
+    {% for key, label in project_filters %}
+    <button role="tab" class="filter{% if loop.first %} active{% endif %}" data-filter="{{ key }}" aria-selected="{{ 'true' if loop.first else 'false' }}">
+      {{ label }} <sup>{{ projects|length if key == 'all' else projects|selectattr('filter', 'equalto', key)|list|length }}</sup>
+    </button>
+    {% endfor %}
+  </div>
+
+  <div class="work-grid" id="workGrid">
+    {% for p in projects %}
+    <article class="work-card reveal" style="--c1: {{ p.c1 }}; --c2: {{ p.c2 }}" data-filter="{{ p.filter }}" data-slug="{{ p.slug }}">
+      <div class="shot">
+        <div class="shot-bar"><i></i><i></i><i></i><span class="mono">{{ p.live.split('//')[-1] if p.live else p.slug ~ '.app' }}</span></div>
+        <div class="shot-view">
+          {% if p.image_path %}
+          <img src="{{ asset(p.image_path) }}" alt="{{ p.title }} screenshot" loading="lazy" decoding="async" width="1200" height="750">
+          {% else %}
+          <div class="mock-body">
+            <div class="mock-side"><span></span><span></span><span></span><span></span><span></span></div>
+            <div class="mock-main">
+              <div class="mock-title">{{ p.title }}</div>
+              <div class="mock-kpis"><span></span><span></span><span></span></div>
+              <div class="mock-chart">{% for h in [38, 62, 48, 80, 66, 92, 58, 74] %}<span style="height: {{ h }}%"></span>{% endfor %}</div>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+        {% if p.live %}<span class="live-badge mono"><i></i> Live</span>{% endif %}
+      </div>
+      <div class="work-meta mono"><span>{{ '%02d' % loop.index }}</span><span>{{ p.category }}</span><span>{{ p.year }}</span></div>
+      <h3>{{ p.title }}</h3>
+      <p>{{ p.summary }}</p>
+      <ul class="tags">{% for t in p.tags %}<li>{{ t }}</li>{% endfor %}</ul>
+      <button class="link-btn mono stretched" data-open="{{ p.slug }}" aria-label="Read case study: {{ p.title }}">Read case study <span>→</span></button>
+    </article>
+    {% endfor %}
+  </div>
+  <div class="work-foot">
+    <button class="btn btn-ghost" id="moreBtn" hidden>Show more projects <span class="arr">↓</span></button>
+    <a href="{{ site.github }}" target="_blank" rel="noopener" class="btn btn-ghost">{{ icon('github') }} All repositories on GitHub ↗</a>
+  </div>
+</section>
+
+<!-- ============ 05 JOURNEY ============ -->
+<section id="journey" class="section" data-num="05" data-name="Journey">
+  <div class="sec-head">
+    <span class="sec-label mono reveal">05 <i></i> Journey</span>
+    <h2 class="sec-title split">Growth, measured in <em>shipped</em> systems.</h2>
+  </div>
+  <div class="journey reveal" id="journeyBox" tabindex="0" aria-label="Experience timeline. Use arrow keys to navigate.">
+    <div class="track">
+      <div class="track-line"><span id="trackFill"></span></div>
+      {% for e in experience %}
+      <button class="node" data-i="{{ loop.index0 }}" aria-label="{{ e.role }} at {{ e.company }}">
+        <span class="dot"></span><span class="mono lbl">{{ e.short }}</span><span class="mono num">{{ '%02d' % loop.index }}</span>
+      </button>
+      {% endfor %}
+    </div>
+    <div class="j-cards">
+      {% for e in experience %}
+      <article class="j-card{% if loop.first %} active{% endif %}" data-i="{{ loop.index0 }}">
+        <div class="j-top mono"><span class="acc">NODE {{ '%02d' % loop.index }}</span><span>{{ e.period }}</span><span>{{ e.place }}</span></div>
+        <h3>{{ e.role }}</h3>
+        <p class="j-company">@ {{ e.company }}</p>
+        <p class="muted">{{ e.text }}</p>
+        <ul class="j-points">{% for pt in e.points %}<li>{{ pt }}</li>{% endfor %}</ul>
+        <ul class="tags">{% for t in e.tags %}<li>{{ t }}</li>{% endfor %}</ul>
+      </article>
+      {% endfor %}
+    </div>
+    <div class="j-ctrl mono">
+      <button id="prevNode">← Previous node</button>
+      <span id="nodeCount">01 / {{ '%02d' % experience|length }}</span>
+      <button id="nextNode">Next node →</button>
+    </div>
+  </div>
+
+  <div class="testimonials">
+    <p class="mono dim reveal t-label">// Client signals · ★★★★★</p>
+    <div class="t-grid" data-stagger>
+      {% for t in testimonials %}
+      <figure class="t-card reveal">
+        <div class="stars" aria-label="5 out of 5 stars">★★★★★</div>
+        <blockquote>“{{ t.quote }}”</blockquote>
+        <figcaption><span class="avatar">{{ t.name[0] }}</span><span><b>{{ t.name }}</b><small class="mono">{{ t.role }} · {{ t.country }}</small></span></figcaption>
+      </figure>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ============ 06 CONTACT ============ -->
+<section id="contact" class="section contact" data-num="06" data-name="Contact">
+  <span class="sec-label mono reveal">06 <i></i> Final transmission</span>
+  <h2 class="contact-title split">You imagine it.<br><span class="outline">I build it.</span></h2>
+  <p class="contact-sub muted reveal">Got a project in mind? Tell me what you're building — I'll reply within 24 hours with honest thoughts and a plan.</p>
+  <div class="contact-grid">
+    <div class="c-links" data-stagger>
+      {% for s in socials %}
+      <a class="c-link reveal" href="{{ s.url }}" target="_blank" rel="noopener" style="--brand: {{ s.color }}">
+        {{ icon(s.icon, s.color, 'ico c-ico') }}
+        <span class="mono">{{ '%02d' % loop.index }} / {{ s.label }}</span>
+        <b>{{ s.value }}</b>
+        <span class="c-arr">↗</span>
+      </a>
+      {% endfor %}
+    </div>
+    <form class="c-form reveal" id="contactForm" novalidate>
+      <div class="f-head mono"><span>// Quick project brief</span><span class="acc">● secure channel</span></div>
+      <div class="f-row">
+        <label><span class="mono">Name</span><input name="name" type="text" autocomplete="name" required maxlength="100" placeholder="Your name"></label>
+        <label><span class="mono">Email</span><input name="email" type="email" autocomplete="email" required maxlength="200" placeholder="you@company.com"></label>
+      </div>
+      <fieldset>
+        <legend class="mono">What do you need?</legend>
+        <div class="chip-select">
+          {% for s in form_services %}
+          <label class="chip"><input type="checkbox" name="services" value="{{ s }}"><span>{{ s }}</span></label>
+          {% endfor %}
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend class="mono">Budget</legend>
+        <div class="chip-select">
+          {% for b in form_budgets %}
+          <label class="chip"><input type="radio" name="budget" value="{{ b }}"><span>{{ b }}</span></label>
+          {% endfor %}
+        </div>
+      </fieldset>
+      <label><span class="mono">Project brief</span><textarea name="message" rows="4" required maxlength="3000" placeholder="What are we building? Goals, timeline, links…"></textarea></label>
+      <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <p class="f-status mono" id="formStatus" role="status" aria-live="polite"></p>
+      <div class="btn-row">
+        <button type="submit" class="btn btn-primary magnetic"><span class="btn-label">Send brief</span> <span class="arr">→</span></button>
+        <button type="button" class="btn btn-ghost" id="mailBtn" data-email="{{ site.email }}">Prepare email ✉</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<div class="marquee" aria-hidden="true">
+  {% for row in [0, 1] %}
+  <div class="mq-row" data-dir="{{ -1 if row == 0 else 1 }}">
+    <div class="mq-track">
+      {% for _ in [0, 1] %}<div class="mq-set">{% for name, ic in (marquee if row == 0 else marquee|reverse) %}<span class="mq-item">{{ icon(ic) }}{{ name }}</span>{% endfor %}</div>{% endfor %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="f-top">
+    <div class="f-brand">
+      <a href="#home" class="logo"><img src="{{ asset('img/logo.svg') }}" alt="" width="46" height="46"><span class="logo-text">{{ site.logo }}<i>.</i></span></a>
+      <p class="muted">{{ site.name }} — {{ site.role }}.<br>{{ site.tagline }}</p>
+      <a href="#contact" class="btn btn-small btn-primary">Let's build →</a>
+    </div>
+    <div class="f-col mono">
+      <p class="dim">// Pages</p>
+      {% for num, label, target in nav %}<a href="#{{ target }}">{{ label }}</a>{% endfor %}
+    </div>
+    <div class="f-col mono">
+      <p class="dim">// Connect</p>
+      {% for s in socials %}<a href="{{ s.url }}" target="_blank" rel="noopener">{{ s.label }}</a>{% endfor %}
+    </div>
+  </div>
+  <div class="f-big" aria-hidden="true"><span>{{ site.name }}</span></div>
+  <div class="f-bottom mono">
+    <span>© {{ year }} {{ site.name }}. All rights reserved.</span>
+    <span>Built by hand in Sylhet · Python + Flask</span>
+    <a href="#home" class="to-top">Back to top ↑</a>
+  </div>
+</footer>
+
+<a class="wa-float" href="https://wa.me/{{ site.whatsapp }}" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">{{ icon('whatsapp') }}</a>
+
+<!-- ============ PROJECT DOSSIER MODAL ============ -->
+<div class="modal" id="dossier" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="dTitle">
+  <div class="modal-backdrop" data-close-modal></div>
+  <div class="modal-box" data-lenis-prevent>
+    <div class="modal-head mono">
+      <span>// Project dossier · <b id="dIdx" class="acc"></b></span>
+      <div class="modal-nav">
+        <button id="dPrev" aria-label="Previous project">←</button>
+        <button id="dNext" aria-label="Next project">→</button>
+        <button data-close-modal aria-label="Close">✕ Close</button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="d-visual" id="dVisual"><img id="dImg" alt="" hidden><span id="dGlyph"></span></div>
+      <div class="d-info">
+        <p class="mono acc" id="dCat"></p>
+        <h3 id="dTitle"></h3>
+        <p class="muted" id="dDesc"></p>
+        <p class="mono dim">// Key features</p>
+        <ul class="j-points" id="dFeatures"></ul>
+        <ul class="tags" id="dTags"></ul>
+        <div class="d-links mono" id="dLinks"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast mono" id="toast" role="status" aria-live="polite"></div>
+
+<script>window.PROJECTS = {{ projects|tojson }};</script>
+<script src="{{ asset('vendor/lenis.min.js') }}" defer></script>
+<script src="{{ asset('js/main.js') }}" defer></script>
+</body>
+</html>
